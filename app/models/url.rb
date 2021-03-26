@@ -21,7 +21,10 @@ class UrlValidator < ActiveModel::EachValidator
 end
 
 class Url < ApplicationRecord
-  # scope :latest, -> {}
+  LATEST_PAGE_SIZE = 10
+
+  scope :latest, -> { order(id: :desc ).limit(LATEST_PAGE_SIZE) }
+
   validates :original_url, url: true
 
   before_create :set_short_url
@@ -39,5 +42,9 @@ class Url < ApplicationRecord
       i /= 26
     end
     s.size < 5 ? 'A' * (5 - s.size) + s : s
+  end
+
+  def clickable_url
+    "#{Rails.application.routes.default_url_options[:host]}/#{short_url}"
   end
 end
