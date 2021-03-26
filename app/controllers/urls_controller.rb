@@ -48,8 +48,14 @@ class UrlsController < ApplicationController
   end
 
   def visit
-    # params[:short_url]
-    render plain: 'redirecting to url...'
+    url = Url.find_by(short_url: params['short_url'])
+    browser = Browser.new(request.user_agent, accept_language: 'en-us')
+    Click.create!(
+      url: url,
+      browser: browser.name || 'Other',
+      platform: browser.platform.to_s || 'Other'
+    )
+    redirect_to url.original_url
   end
 
   private
