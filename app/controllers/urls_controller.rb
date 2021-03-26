@@ -49,6 +49,9 @@ class UrlsController < ApplicationController
 
   def visit
     url = Url.find_by(short_url: params['short_url'])
+
+    return redirect_to '/404.html' if url.nil?
+
     browser = Browser.new(request.user_agent, accept_language: 'en-us')
     Click.create!(
       url: url,
