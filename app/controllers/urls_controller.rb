@@ -12,7 +12,13 @@ class UrlsController < ApplicationController
   end
 
   def create
-    raise 'add some code'
+    @url = Url.new(url_params)
+    if @url.save
+      redirect_to @url
+    else
+      flash[:notice] = @url.errors.to_a.join(', ')
+      redirect_to urls_path
+    end
     # create a new URL record
   end
 
@@ -48,5 +54,11 @@ class UrlsController < ApplicationController
   def visit
     # params[:short_url]
     render plain: 'redirecting to url...'
+  end
+
+  private
+
+  def url_params
+    params.require(:url).permit(:original_url)
   end
 end
